@@ -1,0 +1,122 @@
+﻿@model IEnumerable<SchoolProject.Data.Student>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            font-family: Arial, sans-serif;
+        }
+
+        .table {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+            .table thead {
+                background-color: #002855;
+                color: white;
+            }
+
+        .btn-primary {
+            background-color: #004e89;
+            border-color: #004e89;
+        }
+
+            .btn-primary:hover {
+                background-color: #003f73;
+                border-color: #003f73;
+            }
+
+        .btn-danger {
+            background-color: #bf1a2f;
+            border-color: #bf1a2f;
+        }
+
+            .btn-danger:hover {
+                background-color: #a11729;
+                border-color: #a11729;
+            }
+
+        .btn-warning {
+            background-color: #ffb703;
+            border-color: #ffb703;
+            color: #002855;
+        }
+
+            .btn-warning:hover {
+                background-color: #e0a002;
+                border-color: #e0a002;
+                color: #fff;
+            }
+
+        .add-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>@ViewData["Title"]</h2>
+            <a href="@Url.Action("Create", "Student")" class="btn btn-primary add-button">Add New Student</a>
+        </div>
+
+        <form class="d-flex search-form mb-3" method="get" asp-action="Index" asp-controller="Students">
+            <input type="text" class="form-control" placeholder="Search by name" name="searchQuery" />
+            <button type="submit" class="btn btn-primary ms-2">Search</button>
+        </form>
+
+        <table class="table table-striped table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Class Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var student in Model)
+                    {
+                        <tr>
+                            <td>@student.StudentId</td>
+                            <td>@student.StudentPerson.FirstName</td>
+                            <td>@student.StudentPerson.LastName</td>
+                            <td>@student.StudentClass.ClassName</td>
+                            <td>
+                              
+                                <a href="@Url.Action("Details", "student", new { id = student.StudentId })" class="btn btn-primary btn-sm">Details</a>
+
+                                <form action="@Url.Action("Delete", "Student", new { id = student.StudentId })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this student?');">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No Students Found</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
