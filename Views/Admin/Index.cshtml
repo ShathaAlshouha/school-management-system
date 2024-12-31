@@ -1,0 +1,142 @@
+﻿@model DashboardViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future School Dashboard</title>
+
+    @{
+        Layout = "~/Views/Shared/AdminLayout.cshtml";
+    }
+
+    <style>
+        /* General Reset */
+        body {
+            margin: 0;
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #eef2f3;
+            color: #333;
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Header */
+        .dashboard-header h1 {
+            font-size: 3rem;
+            color: #003f70; /* Navy Blue */
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
+            font-size: 1.2rem;
+            color: #7a8c99; /* Light Gray */
+            margin-bottom: 30px;
+        }
+
+        /* Stats Container */
+        .dashboard-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* Individual Stat Card */
+        .stat-card {
+            flex: 1 1 calc(30% - 20px);
+            min-width: 250px;
+            padding: 20px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #003f73, #8dbdf4); /* Modern Blue Gradient */
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            .stat-card h2 {
+                font-size: 1.8rem;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+            .stat-card p {
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin: 0;
+            }
+
+        /* Calendar Section */
+        .calendar-container {
+            margin-top: 30px;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .calendar-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #003f70;
+            margin-bottom: 15px;
+        }
+
+        .calendar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Future School</h1>
+           
+        </header>
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <h2>Students</h2>
+                <p>@Model.NumberOfStudents</p>
+            </div>
+            <div class="stat-card">
+                <h2>Teachers</h2>
+                <p>@Model.NumberOfTeachers</p>
+            </div>
+            <div class="stat-card">
+                <h2>Staffs</h2>
+                <p>@Model.NumberOfStaffs</p>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                Current Date: @DateTime.Now.ToString("dddd, MMMM dd, yyyy")
+            </div>
+            <div class="calendar">
+                <p>@DateTime.Now.ToString("MMMM yyyy")</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

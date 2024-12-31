@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore; 
 using SchoolProject.Data;
  
@@ -7,89 +8,181 @@ namespace SchoolProject.Controllers
 {
     public class CourseController : Controller
     {
-        private readonly ApplicationDBContext context;
+        private readonly ApplicationDBContext _context;
 
         public CourseController(ApplicationDBContext context)
         {
-            this.context = context;
+            _context = context; 
         }
         public IActionResult Index()
         {
-            var courses = context.Courses.OrderByDescending(p => p.CourseId).ToList();
-            return View(courses);
+            var courses = _context.Courses .Include(c => c.CourseTeacher) 
+                   .ThenInclude(t => t.TeacherPerson) 
+                    .Include(c => c.CourseClass);
+
+            return View(courses.ToList());
+
         }
+
 
         public IActionResult Create()
         {
-            return View(new CourseDto()); 
+            var teacherList = _context.Teachers
+                .Include(t => t.TeacherPerson)
+                .Select(t => new
+                {
+                    TeacherId = t.TeacherId,
+                    FullName = t.TeacherPerson.FirstName + " " + t.TeacherPerson.LastName
+                }).ToList();
+
+            if (!teacherList.Any())
+            {
+                TempData["ErrorMessage"] = "No teachers available";
+                return RedirectToAction("Index", "Teachers");
+            }
+
+            ViewBag.TeacherId = new SelectList(teacherList, "TeacherId", "FullName");
+          ViewBag.ClassId= new SelectList(_context.Classes, "ClassId", "ClassName");
+            return View();
         }
 
         [HttpPost]
-        public IActionResult Create(CourseDto courseDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Course course)
         {
             if (ModelState.IsValid)
             {
-                var newCourse = new Course
-                {
-                    CourseName = courseDto.CourseName
-                };
-                context.Courses.Add(newCourse);
-                context.SaveChanges();
-                return RedirectToAction("Index");
+                _context.Add(course);
+                _context.SaveChanges();
+                return RedirectToAction(nameof(Index));
             }
-            return View(courseDto);
+
+           
+            var teacherList = _context.Teachers
+                .Include(t => t.TeacherPerson)
+                .Select(t => new
+                {
+                    TeacherId = t.TeacherId,
+                    FullName = t.TeacherPerson.FirstName + " " + t.TeacherPerson.LastName
+                }).ToList();
+
+            if (!teacherList.Any())
+            {
+                TempData["ErrorMessage"] = "No teachers available";
+                return RedirectToAction("Index", "Teachers");
+            }
+
+            ViewBag.TeacherId = new SelectList(teacherList, "TeacherId", "FullName", course.TeacherId);
+            ViewBag.ClassId = new SelectList(_context.Classes, "ClassId", "ClassName", course.ClassId);
+
+            return View(course);
         }
 
-        public IActionResult Edit(int courseId)
+        public IActionResult Edit(int? id)
         {
-            var course = context.Courses.FirstOrDefault(c => c.CourseId == courseId);
-            if (course == null)
+            if (id == null)
             {
-                return RedirectToAction("Index");
+                return NotFound();
             }
 
-            var courseDto = new CourseDto
-            {
-                CourseName = course.CourseName
-            };
+            var cours = _context.Classes.Find(id);
 
-            return View(courseDto);
+            if (cours == null)
+            {
+                return NotFound();
+            }
+
+            var teacherList = _context.Teachers
+                .Include(t => t.TeacherPerson)
+                .Select(t => new
+                {
+                    TeacherId = t.TeacherId,
+                    FullName = t.TeacherPerson.FirstName + " " + t.TeacherPerson.LastName 
+                }).ToList();
+
+            var classList = _context.Classes.ToList();
+
+            ViewBag.TeacherId = new SelectList(teacherList, "TeacherId", "FullName");
+            ViewBag.ClassId = new SelectList(classList, "ClassId", "ClassName");
+            return View(cours);
         }
 
 
         [HttpPost]
-        public IActionResult Edit(int courseId, CourseDto courseDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Course course)
         {
-            var course = context.Courses.FirstOrDefault(c => c.CourseId == courseId);
-            if (course == null)
+            if (id != course.ClassId)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                course.CourseName = courseDto.CourseName;
-
-                context.SaveChanges();
-
-                return RedirectToAction("Index");
+                try
+                {
+                    _context.Update(course);
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CourseExists(course.CourseId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(courseDto);
+
+            var teacherList = _context.Teachers
+                .Include(t => t.TeacherPerson)
+                .Select(t => new
+                {
+                    TeacherId = t.TeacherId,
+                    FullName = t.TeacherPerson.FirstName + " " + t.TeacherPerson.LastName
+                }).ToList();
+           
+            ViewBag.TeacherId = new SelectList(teacherList, "TeacherId", "FullName");
+            ViewBag.ClassId = new SelectList(_context.Classes, "ClassId", "ClassName");
+            return View(course);
         }
 
-        public IActionResult Delete(int courseId)
+     
+       
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
         {
-            var course = context.Courses.FirstOrDefault(c => c.CourseId == courseId);
-            if (course == null)
+            try
             {
+                var Course = _context.Courses.
+                    FirstOrDefault(c => c.CourseId == id);
+
+                if (Course == null)
+                {
+                    return NotFound();
+                }
+
+
+                _context.Courses.Remove(Course);
+                _context.SaveChanges();
                 return RedirectToAction("Index");
             }
+            catch (Exception ex)
+            {
 
-            context.Courses.Remove(course);
-            context.SaveChanges();
-
-            return RedirectToAction("Index");
+                return BadRequest($"  Deletion failed: {ex.Message}");
+            }
+        }
+        private bool CourseExists(int id)
+        {
+            return _context.Courses.Any(c => c.CourseId == id);
         }
     }
 }

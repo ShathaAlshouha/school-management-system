@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SchoolProject.Data;
 using SchoolProject.Models;
 using System.Diagnostics;
 
@@ -8,13 +9,17 @@ namespace SchoolProject.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public readonly ApplicationDBContext _context;
+        public HomeController(ApplicationDBContext context)
         {
-            _logger = logger;
+            _context = context;
         }
+    
 
         public IActionResult Index()
         {
+          
+
             return View();
         }
 

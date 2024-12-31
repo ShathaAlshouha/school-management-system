@@ -1,11 +1,11 @@
-﻿@model SchoolProject.Data.Class
+﻿@model SchoolProject.Data.Course
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Class</title>
+    <title>Edit @ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     @{
         Layout = "~/Views/Shared/AdminLayout.cshtml";
@@ -76,44 +76,31 @@
         .col-md-6 {
             margin-bottom: 15px;
         }
-
-        .col-md-4 {
-            margin-bottom: 15px;
-        }
     </style>
 </head>
 <body>
     <div class="container mt-5">
-        <h2 class="text-center mb-4 form-title">Edit Class</h2>
+        <h2 class="text-center mb-4 form-title">Edit Course</h2>
 
         <div class="form-container">
-            <form asp-action="Edit">
+            <form asp-action="Edit" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="ClassId" />
+                <input type="hidden" asp-for="CourseId" />
 
                 <div class="row">
-                    <!-- Class Name -->
+                    <!-- Course Name -->
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="ClassName" class="form-label">Class Name</label>
-                            <input asp-for="ClassName" class="form-control" />
-                            <span asp-validation-for="ClassName" class="text-danger"></span>
+                            <label for="CourseName" class="form-label">Course Name</label>
+                            <input asp-for="CourseName" class="form-control" />
+                            <span asp-validation-for="CourseName" class="text-danger"></span>
                         </div>
                     </div>
 
-                    <!-- Fees -->
+                    <!-- Teacher Name -->
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="Fees" class="form-label">Fees</label>
-                            <input asp-for="fees" class="form-control" />
-                            <span asp-validation-for="fees" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <!-- Teacher ID -->
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="TeacherId" class="form-label">Teacher</label>
+                            <label for="TeacherId" class="form-label">Teacher Name</label>
                             <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId"></select>
                             <span asp-validation-for="TeacherId" class="text-danger"></span>
                         </div>
@@ -124,12 +111,18 @@
                     <button type="submit" class="btn-primary">
                         Save
                     </button>
-                    <a href="@Url.Action("Index", "Classes")" class="btn btn-secondary">Back to List</a>
+                    <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
                 </div>
             </form>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
 </body>
 </html>

@@ -11,10 +11,6 @@ namespace SchoolProject.Data
 
         public int GradeId { get; set; }
 
-
-
-
-
         [Required]
 
         public int? MidExam { get; set; }

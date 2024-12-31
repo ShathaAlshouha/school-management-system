@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<SchoolProject.Data.Payment>
-
+@{
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
 @{
     ViewData["Title"] = "Index";
 }
@@ -12,25 +14,13 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RemainingPayment)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalAmount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentStudent)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentClass)
-            </th>
-            <th></th>
+            <th> Payment Amount </th>
+            <th> Paymant Date </th>
+            <th>Remaining Payment </th>
+            <th>Total Amount  </th>
+            <th> Student Id </th>
+            <th>Class Name</th>
+           
         </tr>
     </thead>
     <tbody>

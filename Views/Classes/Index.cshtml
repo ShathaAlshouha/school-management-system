@@ -1,47 +1,118 @@
 ﻿@model IEnumerable<SchoolProject.Data.Class>
 
-@{
-    ViewData["Title"] = "Index";
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            font-family: Arial, sans-serif;
+        }
 
-<h1>Index</h1>
+        .table {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ClassName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.fees)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ClassTeacher)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClassName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fees)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClassTeacher.TeacherPerson.FirstName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ClassId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ClassId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ClassId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+            .table thead {
+                background-color: #002855;
+                color: white;
+            }
+
+        .btn-primary {
+            background-color: #004e89;
+            border-color: #004e89;
+        }
+
+            .btn-primary:hover {
+                background-color: #003f73;
+                border-color: #003f73;
+            }
+
+        .btn-danger {
+            background-color: #bf1a2f;
+            border-color: #bf1a2f;
+        }
+
+            .btn-danger:hover {
+                background-color: #a11729;
+                border-color: #a11729;
+            }
+
+        .btn-warning {
+            background-color: #ffb703;
+            border-color: #ffb703;
+            color: #002855;
+        }
+
+            .btn-warning:hover {
+                background-color: #e0a002;
+                border-color: #e0a002;
+                color: #fff;
+            }
+
+        .add-button {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2>Class List</h2>
+            <a href="@Url.Action("Create", "Classes")" class="btn btn-primary add-button">Add New Class</a>
+        </div>
+
+        <table class="table table-striped table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Fees</th>
+                    <th>Class Teacher</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ClassName</td>
+                            <td>@item.fees</td>
+                            <td>
+                                @if (item.ClassTeacher?.TeacherPerson != null)
+                                {
+                                    @($"{item.ClassTeacher.TeacherPerson.FirstName} {item.ClassTeacher.TeacherPerson.LastName}")
+                                }
+                                else
+                                {
+                                    <span class="text-danger">No Teacher Assigned</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a href="@Url.Action("Edit", "Classes", new { id = item.ClassId })" class="btn btn-warning btn-sm">Edit</a>
+                               
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">No Classes Found</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
