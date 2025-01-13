@@ -1,0 +1,44 @@
+﻿@model SchoolProject.Data.Grade
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Grade</h4>
+    <hr />
+    <dl class="row">
+      
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ActivityMark)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ActivityMark)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FinalExam)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FinalExam)
+        </dd>
+       
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.GradeStudent)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GradeStudent.StudentId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.GradeCourse)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GradeCourse.CourseName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.GradeId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
+using SchoolProject.Helper;
 using SchoolProject.Data;
  
 
@@ -16,6 +17,11 @@ namespace SchoolProject.Controllers
         }
         public IActionResult Index()
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var courses = _context.Courses .Include(c => c.CourseTeacher) 
                    .ThenInclude(t => t.TeacherPerson) 
                     .Include(c => c.CourseClass);
@@ -23,10 +29,12 @@ namespace SchoolProject.Controllers
             return View(courses.ToList());
 
         }
-
-
         public IActionResult Create()
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var teacherList = _context.Teachers
                 .Include(t => t.TeacherPerson)
                 .Select(t => new
@@ -77,9 +85,12 @@ namespace SchoolProject.Controllers
 
             return View(course);
         }
-
         public IActionResult Edit(int? id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -106,7 +117,6 @@ namespace SchoolProject.Controllers
             ViewBag.ClassId = new SelectList(classList, "ClassId", "ClassName");
             return View(cours);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -152,8 +162,6 @@ namespace SchoolProject.Controllers
             return View(course);
         }
 
-     
-       
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

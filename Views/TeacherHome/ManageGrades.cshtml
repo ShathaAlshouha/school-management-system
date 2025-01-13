@@ -1,0 +1,110 @@
+﻿@model List<SchoolProject.Data.GradeDto>
+
+@{
+
+    var teacherName = ViewData["TeacherName"] as string;  // Retrieve teacher name
+}
+
+<div class="container mt-5">
+    <h2 class="text-center py-3 rounded shadow">
+        Manage Grades
+    </h2>
+
+    <form asp-action="SaveGrades" method="post" class="mt-4">
+        <div class="table-responsive shadow rounded"> 
+            <table class="table table-hover align-middle">
+                <thead class="text-white" style="background: linear-gradient(135deg, #3b5998, #1c2833);">
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>First Exam</th>
+                        <th>Activity Mark</th>
+                        <th>Final Exam</th>
+                        <th>Total Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var student in Model)
+                    {
+                        <tr class="bg-light">
+                            <td>@student.FirstName</td>
+                            <td>@student.LastName</td>
+
+                            <td>
+                                <input type="number" 
+                                       name="grades[@student.StudentId].FirstExam" 
+                                       value="@student.FirstExam" 
+                                       class="form-control" />
+                            </td>
+
+                            <td>
+                                <input type="number" 
+                                       name="grades[@student.StudentId].ActivityMark" 
+                                       value="@student.ActivityMark" 
+                                       class="form-control" />
+                            </td>
+
+                            <td>
+                                <input type="number" 
+                                       name="grades[@student.StudentId].FinalExam" 
+                                       value="@student.FinalExam" 
+                                       class="form-control form-control-sm" />
+                            </td>
+
+                            <td class="text-primary fw-bold">
+                                @(student.FirstExam.GetValueOrDefault() +
+                                  student.ActivityMark.GetValueOrDefault() +
+                                  student.FinalExam.GetValueOrDefault())
+                            </td>
+
+                            <input type="hidden" name="grades[@student.StudentId].StudentId" value="@student.StudentId" />
+                            <input type="hidden" name="grades[@student.StudentId].CourseId" value="@student.CourseId" />
+                            <input type="hidden" id="TeacherId" value="@ViewBag.TeacherId" />
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary btn-lg px-5 shadow">
+                Save Grades
+            </button>
+            <div class="text-center mt-4">
+                <a href="@Url.Action("UpgradeStudents", "TeacherHome", new { courseId = Model.FirstOrDefault()?.CourseId })"
+                   class="btn btn-success btn-lg px-5 shadow">
+                    Upgrade Passed Students to Next Class
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+<style>
+    body {
+        background: linear-gradient(to bottom, #eaf0f8, #d4dce7);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+    }
+
+    .btn-primary {
+        background-color: #1c2833;
+        transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        background:  #1c2833;
+        transform: scale(1.05);
+    }
+
+    h2 {
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>

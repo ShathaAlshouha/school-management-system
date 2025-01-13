@@ -1,58 +1,146 @@
 ﻿@model IEnumerable<SchoolProject.Data.Payment>
+
 @{
     Layout = "~/Views/Shared/AdminLayout.cshtml";
+    ViewData["Title"] = "Payments ";
 }
-@{
-    ViewData["Title"] = "Index";
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f7f9fc;
+            font-family: Arial, sans-serif;
+        }
 
-<h1>Index</h1>
+        .table-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th> Payment Amount </th>
-            <th> Paymant Date </th>
-            <th>Remaining Payment </th>
-            <th>Total Amount  </th>
-            <th> Student Id </th>
-            <th>Class Name</th>
-           
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RemainingPayment)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalAmount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentStudent.StudentId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentClass.ClassName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PaymentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PaymentId">Details</a> |
-                    <form action="@Url.Action("Delete", "Payments", new { id = item.PaymentId })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this staff?');">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                    </form>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        .table {
+            font-size: 0.875rem; /* حجم النص */
+        }
+
+            .table th, .table td {
+                padding: 0.5rem; /* تقليل الحشوة */
+            }
+
+            .table thead {
+                background-color: #002855;
+                color: white;
+            }
+
+        .btn-primary {
+            background-color: #004e89;
+            border-color: #004e89;
+        }
+
+            .btn-primary:hover {
+                background-color: #003f73;
+                border-color: #003f73;
+            }
+
+        .btn-danger {
+            background-color: #bf1a2f;
+            border-color: #bf1a2f;
+        }
+
+            .btn-danger:hover {
+                background-color: #a11729;
+                border-color: #a11729;
+            }
+
+        .btn-warning {
+            background-color: #ffb703;
+            border-color: #ffb703;
+            color: #002855;
+        }
+
+            .btn-warning:hover {
+                background-color: #e0a002;
+                border-color: #e0a002;
+                color: white;
+            }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+
+            .btn-info:hover {
+                background-color: #117a8b;
+                border-color: #117a8b;
+            }
+    </style>
+</head>
+<body>
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Payment List</h2>
+        <a href="@Url.Action("StudentIndex", "Payments")" class="btn btn-primary add-button">Create New Payment</a>
+    </div>
+    <form class="d-flex search-form mb-3" method="get" asp-action="Index" asp-controller="Payments">
+        <input type="text" class="form-control" placeholder="Search by name" name="searchQuery" />
+        <button type="submit" class="btn btn-primary ms-2">Search</button>
+    </form>
+        </div>
+
+        <div class="table-container">
+            <table class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Payment Amount</th>
+                        <th>Remaining Payment</th>
+                        <th>Total Amount</th>
+                        <th>Class Name</th>
+                        <th>Payment Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.PaymentStudent.StudentPerson.FirstName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PaymentStudent.StudentPerson.LastName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PaymentAmount)</td>
+                                <td>@Html.DisplayFor(modelItem => item.RemainingPayment)</td>
+                                <td>@Html.DisplayFor(modelItem => item.TotalAmount)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PaymentClass.ClassName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PaymentDate)</td>
+                                <td>
+                                   
+                                   
+                                    <form action="@Url.Action("Delete", "Payments", new { id = item.PaymentId })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this payment?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">No payments available.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

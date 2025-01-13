@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolProject.Data;
+using SchoolProject.Helper;
 
 namespace SchoolProject.Controllers
 {
@@ -13,6 +14,11 @@ namespace SchoolProject.Controllers
         }
         public IActionResult Index(string searchQuery)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var staffList = _context.Parents
                 .Include(p=>p.ParentPerson)
                 .AsQueryable();
@@ -52,9 +58,14 @@ namespace SchoolProject.Controllers
 
         public IActionResult Create(int Id)
         {
-			int studentId = (int)TempData["StudentId"];
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
-			// تمرير studentId إلى الـ ViewData أو استخدامه كما تحتاج
+            int studentId = (int)TempData["StudentId"];
+
+		
 			ViewData["StudentId"] = studentId;
 			return View();
         }
@@ -65,7 +76,7 @@ namespace SchoolProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                // إنشاء شخص جديد للوالد
+              
                 var person = new Person()
                 {
                     NationalID = parentDto.NationalID,
@@ -82,7 +93,7 @@ namespace SchoolProject.Controllers
                 _context.Persons.Add(person);
                 _context.SaveChanges();
 
-                // إنشاء الوالد وربطه بالـ Student
+              
                 var parent = new Parent
                 {
                     ParentID = parentDto.ParentID,
@@ -93,7 +104,7 @@ namespace SchoolProject.Controllers
                 _context.Parents.Add(parent);
                 _context.SaveChanges();
 
-                // ربط الـ ParentId بالطالب الذي تم تخزينه مسبقًا
+                
              var student = _context.Students.FirstOrDefault(s => s.StudentId ==  studentId);
                 if (student != null && parent != null)
                 {
@@ -103,11 +114,10 @@ namespace SchoolProject.Controllers
                 }
 
 
-                // بعد أن يتم ربط الوالد بالطالب، نقوم بإعادة التوجيه إلى صفحة عرض الطلاب
+               
                 return RedirectToAction("Index", "Student");
             }
 
-            // في حالة وجود أخطاء، عد إلى نفس الصفحة
             return View(parentDto);
         }
 

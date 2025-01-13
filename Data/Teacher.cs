@@ -35,8 +35,7 @@ namespace SchoolProject.Data
 
 
 
-        public List<TeacherAttendance>? TeacherAttendances { get; set; }
-
+      
         public List<Course>? course { get; set; }
 
     }

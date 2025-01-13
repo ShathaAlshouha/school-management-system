@@ -27,11 +27,11 @@ namespace SchoolProject.Migrations
 
             modelBuilder.Entity("SchoolProject.Data.Class", b =>
                 {
-                    b.Property<int>("ClassId")
+                    b.Property<int>("ClassID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClassID"));
 
                     b.Property<string>("ClassName")
                         .IsRequired()
@@ -43,7 +43,7 @@ namespace SchoolProject.Migrations
                     b.Property<int>("fees")
                         .HasColumnType("int");
 
-                    b.HasKey("ClassId");
+                    b.HasKey("ClassID");
 
                     b.HasIndex("TeacherId");
 
@@ -58,7 +58,7 @@ namespace SchoolProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CourseId"));
 
-                    b.Property<int?>("ClassId")
+                    b.Property<int?>("ClassID")
                         .HasColumnType("int");
 
                     b.Property<string>("CourseName")
@@ -70,7 +70,7 @@ namespace SchoolProject.Migrations
 
                     b.HasKey("CourseId");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("ClassID");
 
                     b.HasIndex("TeacherId");
 
@@ -147,7 +147,7 @@ namespace SchoolProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
 
-                    b.Property<int>("ClassId")
+                    b.Property<int>("ClassID")
                         .HasColumnType("int");
 
                     b.Property<int>("PaymentAmount")
@@ -164,7 +164,7 @@ namespace SchoolProject.Migrations
 
                     b.HasKey("PaymentId");
 
-                    b.HasIndex("ClassId")
+                    b.HasIndex("ClassID")
                         .IsUnique();
 
                     b.HasIndex("StudentId");
@@ -286,7 +286,7 @@ namespace SchoolProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentId"));
 
-                    b.Property<int>("ClassId")
+                    b.Property<int>("ClassID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EnrollmentDate")
@@ -300,7 +300,7 @@ namespace SchoolProject.Migrations
 
                     b.HasKey("StudentId");
 
-                    b.HasIndex("ClassId");
+                    b.HasIndex("ClassID");
 
                     b.HasIndex("ParentId");
 
@@ -412,7 +412,7 @@ namespace SchoolProject.Migrations
                 {
                     b.HasOne("SchoolProject.Data.Class", "CourseClass")
                         .WithMany("courses")
-                        .HasForeignKey("ClassId");
+                        .HasForeignKey("ClassID");
 
                     b.HasOne("SchoolProject.Data.Teacher", "CourseTeacher")
                         .WithMany("course")
@@ -457,7 +457,7 @@ namespace SchoolProject.Migrations
                 {
                     b.HasOne("SchoolProject.Data.Class", "PaymentClass")
                         .WithOne("Payment")
-                        .HasForeignKey("SchoolProject.Data.Payment", "ClassId")
+                        .HasForeignKey("SchoolProject.Data.Payment", "ClassID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -506,7 +506,7 @@ namespace SchoolProject.Migrations
                 {
                     b.HasOne("SchoolProject.Data.Class", "StudentClass")
                         .WithMany("Students")
-                        .HasForeignKey("ClassId")
+                        .HasForeignKey("ClassID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

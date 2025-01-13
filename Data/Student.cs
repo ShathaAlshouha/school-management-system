@@ -27,8 +27,6 @@ namespace SchoolProject.Data
 
         public Class? StudentClass { get; set; }
 
-
-
         public List<Payment>? Payment { get; set; }
 
 

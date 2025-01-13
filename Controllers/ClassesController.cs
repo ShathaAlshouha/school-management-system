@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SchoolProject.Data;
+using SchoolProject.Helper;
 
 namespace SchoolProject.Controllers
 {
@@ -21,6 +22,12 @@ namespace SchoolProject.Controllers
         // GET: Classes
         public IActionResult Index()
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            var personid = HttpContext.Session.GetInt32("PersonID");
+
             var classList = _context.Classes
                 .Include(c => c.ClassTeacher)
                 .ThenInclude(t => t.TeacherPerson) 
@@ -32,6 +39,10 @@ namespace SchoolProject.Controllers
 
         public IActionResult Details(int? id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
             if (id == null)
             {
                 return NotFound();
@@ -51,6 +62,10 @@ namespace SchoolProject.Controllers
         // GET: Classes/Create
         public IActionResult Create()
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var teacherList = _context.Teachers
                 .Include(t => t.TeacherPerson) 
                 .Select(t => new
@@ -100,6 +115,11 @@ namespace SchoolProject.Controllers
         // GET: Classes/Edit/5
         public IActionResult Edit(int? id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (id == null)
             {
                 return NotFound();

@@ -1,7 +1,4 @@
-﻿@model SchoolProject.Data.Payment
-@{
-    Layout = "~/Views/Shared/AdminLayout.cshtml";
-}
+﻿@model SchoolProject.Data.PaymentDto
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,65 +8,68 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f7f9fc;
-            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
         }
 
         .form-title {
-            color: #00008b;
+            color: #0056b3;
             font-weight: bold;
+            margin-bottom: 20px;
         }
 
         .form-container {
             background-color: white;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 800px;
         }
 
         label {
             font-weight: bold;
-            color: #004e89;
+            color: #0056b3;
         }
 
         input,
         select {
-            border: 2px solid #b0c4de;
+            border: 1px solid #ced4da;
             border-radius: 5px;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
             input:focus,
             select:focus {
-                border-color: #004e89;
+                border-color: #0056b3;
+                box-shadow: 0 0 5px rgba(0, 86, 179, 0.3);
                 outline: none;
-                box-shadow: 0 0 5px rgba(0, 78, 137, 0.5);
             }
 
         .btn-primary {
-            background-color: #004e89;
-            border-color: #004e89;
+            background-color: #0056b3;
+            border-color: #0056b3;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
             .btn-primary:hover {
-                background-color: #003f73;
-                border-color: #003f73;
+                background-color: #004494;
+                border-color: #004494;
             }
 
         .btn-secondary {
-            background-color: #a8a8a8;
-            border-color: #a8a8a8;
-            color: #ffffff;
+            background-color: #6c757d;
+            border-color: #6c757d;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
             .btn-secondary:hover {
-                background-color: #8c8c8c;
-                border-color: #8c8c8c;
+                background-color: #5a6268;
+                border-color: #5a6268;
             }
 
         .row {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .col-md-6 {
@@ -78,15 +78,52 @@
     </style>
 </head>
 <body>
+ 
+
     <div class="container mt-5">
-        <h2 class="text-center mb-4 form-title">Create Payment</h2>
-        <form class="d-flex search-form mb-3" method="get" asp-action="Create" asp-controller="Payments">
-            <input type="text" class="form-control" placeholder="Search by name" name="searchQuery" />
-            <button type="submit" class="btn btn-primary ms-2">Search</button>
-        </form>
         <div class="form-container">
             <form asp-action="Create" method="post">
+               
+                <input type="hidden" asp-for="StudentId" />
+                <input type="hidden" asp-for="ClassId" />
+                <input type="hidden" asp-for="TotalAmount" />
+
                 <div class="row">
+                  
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="FirstName" class="form-label">First Name</label>
+                            <input asp-for="FirstName" class="form-control" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label">Last Name</label>
+                            <input asp-for="LastName" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Total Amount and Remaining Payment Fields -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="TotalAmount" class="form-label">Total Amount</label>
+                            <input asp-for="TotalAmount" class="form-control" readonly />
+                            <span asp-validation-for="TotalAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label asp-for="RemainingPayment" class="form-label">Remaining Payment</label>
+                            <input asp-for="RemainingPayment" class="form-control" readonly />
+                            <span asp-validation-for="RemainingPayment" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Payment Amount Field -->
                     <div class="col-md-6">
                         <div class="mb-3">
                             <label asp-for="PaymentAmount" class="form-label">Payment Amount</label>
@@ -94,40 +131,8 @@
                             <span asp-validation-for="PaymentAmount" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="PaymentDate" class="form-label">Payment Date</label>
-                            <input asp-for="PaymentDate" class="form-control" />
-                            <span asp-validation-for="PaymentDate" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="RemainingPayment" class="form-label">Remaining Payment</label>
-                            <input asp-for="RemainingPayment" class="form-control" />
-                            <span asp-validation-for="RemainingPayment" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="TotalAmount" class="form-label">Total Amount</label>
-                            <input asp-for="TotalAmount" class="form-control" />
-                            <span asp-validation-for="TotalAmount" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="StudentId" class="form-label">Student</label>
-                            <select asp-for="StudentId" class="form-control" asp-items="ViewBag.StudentId"></select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="ClassId" class="form-label">Class</label>
-                            <select asp-for="ClassId" class="form-control" asp-items="ViewBag.ClassId"></select>
-                        </div>
-                    </div>
                 </div>
+
                 <div class="d-flex justify-content-between">
                     <button type="submit" class="btn btn-primary">Create</button>
                     <a asp-action="Index" class="btn btn-secondary">Back to List</a>

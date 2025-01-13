@@ -14,20 +14,11 @@ namespace SchoolProject.Data
         [Required]
 
         public string? CourseName { get; set; }
-
-
-
-
-
         [ForeignKey(nameof(CourseTeacher))]
 
         public int? TeacherId { get; set; }
 
         public Teacher? CourseTeacher { get; set; }
-
-
-
-
 
         [ForeignKey(nameof(CourseClass))]
 
@@ -36,9 +27,6 @@ namespace SchoolProject.Data
         public Class? CourseClass { get; set; }
 
         public List<Grade>? Grades { get; set; }
-
-
-
 
 
     }

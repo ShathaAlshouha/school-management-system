@@ -32,9 +32,25 @@
             border-color: #004e89;
         }
 
+        .btn-primary {
+            background-color: #004e89;
+            border-color: #004e89;
+        }
+
             .btn-primary:hover {
                 background-color: #003f73;
                 border-color: #003f73;
+            }
+
+        .btn-gray {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #fff;
+        }
+
+            .btn-gray:hover {
+                background-color: #5a6268;
+                border-color: #5a6268;
             }
 
         .btn-danger {
@@ -72,7 +88,7 @@
             <a href="@Url.Action("Create", "Student")" class="btn btn-primary add-button">Add New Student</a>
         </div>
 
-        <form class="d-flex search-form mb-3" method="get" asp-action="Index" asp-controller="Students">
+        <form class="d-flex search-form mb-3" method="get" asp-action="Index" asp-controller="Student">
             <input type="text" class="form-control" placeholder="Search by name" name="searchQuery" />
             <button type="submit" class="btn btn-primary ms-2">Search</button>
         </form>
@@ -98,13 +114,14 @@
                             <td>@student.StudentPerson.LastName</td>
                             <td>@student.StudentClass.ClassName</td>
                             <td>
-                              
+
                                 <a href="@Url.Action("Details", "student", new { id = student.StudentId })" class="btn btn-primary btn-sm">Details</a>
 
                                 <form action="@Url.Action("Delete", "Student", new { id = student.StudentId })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this student?');">
                                     @Html.AntiForgeryToken()
                                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
+                               
                             </td>
                         </tr>
                     }

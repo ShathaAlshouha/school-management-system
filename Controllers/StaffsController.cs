@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolProject.Data;
+using SchoolProject.Helper;
 
 namespace SchoolProject.Controllers
 {
@@ -13,6 +14,10 @@ namespace SchoolProject.Controllers
         }
         public IActionResult Index(string searchQuery)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
             var staffList = _context.Staffs
                 .Include(s => s.StaffPerson)
                 .AsQueryable();
@@ -51,7 +56,10 @@ namespace SchoolProject.Controllers
 
         public IActionResult Create ()
         {
-
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
@@ -149,6 +157,10 @@ namespace SchoolProject.Controllers
         }
         public IActionResult Edit(int id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             var staff = _context.Staffs
         .Include(s => s.StaffPerson) 

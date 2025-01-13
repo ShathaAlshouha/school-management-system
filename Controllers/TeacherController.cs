@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SchoolProject.Data;
 using Microsoft.EntityFrameworkCore;
+using SchoolProject.Helper;
 namespace SchoolProject.Controllers
 {
     public class TeacherController : Controller
@@ -13,6 +14,11 @@ namespace SchoolProject.Controllers
      
         public IActionResult Index(string searchQuery)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var teacherList = _context.Teachers
                 .Include(t => t.TeacherPerson)
                 .AsQueryable();
@@ -40,7 +46,7 @@ namespace SchoolProject.Controllers
                 Email = t.TeacherPerson.Email,
                 DateOfBirth = t.TeacherPerson.DateOfBirth,
                 Address = t.TeacherPerson.Address,
-                Role = t.TeacherPerson.Role
+                Role = "Teacher"
             }).ToList();
 
             return View(teacherDtoList);
@@ -49,6 +55,11 @@ namespace SchoolProject.Controllers
        
         public IActionResult Create()
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             return View();
         }
 
@@ -69,7 +80,7 @@ namespace SchoolProject.Controllers
                     contactNumber = teacherDto.contactNumber,
                     Address = teacherDto.Address,
                     DateOfBirth = teacherDto.DateOfBirth,
-                    Role = teacherDto.Role,
+                    Role ="Teacher",
                 };
 
                 _context.Persons.Add(person);
@@ -86,22 +97,13 @@ namespace SchoolProject.Controllers
                 _context.Teachers.Add(teacher);
                 _context.SaveChanges();
 
-                TempData["PersonID"] = person.PersonID;
-                TempData["NationalID"] = person.NationalID;
-                TempData["FirstName"] = person.FirstName;
-                TempData["SecondName"] = person.SecondName;
-                TempData["LastName"] = person.LastName;
-                TempData["Email"] = person.Email;  
-                TempData["ContactNumber"] = person.contactNumber;
-                TempData["Address"] = person.Address;
-                TempData["DateOfBirth"] = person.DateOfBirth;
-                TempData["Role"] = person.Role;
-
+                TempData["PersonId"] = person.PersonID;
+               
                 TempData.Keep();
                 return RedirectToAction("Create", "Users");
             }
 
-            return View(teacherDto);
+            return View("Create", teacherDto);
         }
 
         [HttpPost]
@@ -139,12 +141,17 @@ namespace SchoolProject.Controllers
                 return RedirectToAction("Index", "Teacher");
             }
 
-            return View(teacherDto);
+            return View("Create", teacherDto);
         }
 
      
         public IActionResult Edit(int id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var teacher = _context.Teachers
                 .Include(t => t.TeacherPerson)
                 .FirstOrDefault(t => t.TeacherId == id);
@@ -217,6 +224,11 @@ namespace SchoolProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             try
             {
                 var teacher = _context.Teachers
@@ -242,6 +254,11 @@ namespace SchoolProject.Controllers
 
         public IActionResult Details(int id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var teacher = _context.Teachers
                 .Include(t => t.TeacherPerson) // 
                 .FirstOrDefault(t => t.TeacherId == id);

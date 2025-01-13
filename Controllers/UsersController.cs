@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SchoolProject.Data;
+using SchoolProject.Helper;
 
 namespace SchoolProject.Controllers
 {
@@ -16,6 +18,10 @@ namespace SchoolProject.Controllers
         }
         public IActionResult Index(string searchQuery)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
             var users = context.Users
                 .Include(u => u.UserPerson)
@@ -30,7 +36,7 @@ namespace SchoolProject.Controllers
                                           u.UserPerson.LastName.Contains(searchQuery)));  // البحث عن الاسم أو اسم المستخدم
             }
 
-            // تحويل النتيجة إلى UserDto ثم إرجاعها إلى الواجهة
+           
             var userList = users.Select(u => new UserDto
             {
                 UserId = u.UserId,
@@ -51,53 +57,46 @@ namespace SchoolProject.Controllers
 
         public IActionResult Create()
         {
-            var userDto = new UserDto
+            if (!SessionHelpercs.IsAdmin(HttpContext))
             {
-                PersonId = TempData["PersonID"] != null ? (int)TempData["PersonID"] : 0,
+                return RedirectToAction("Login", "Account");
+            }
 
-                NationalID = TempData["NationalID"] != null ? (int)TempData["NationalID"] : 0,
-                FirstName = TempData["FirstName"]?.ToString() ?? string.Empty,
-                SecondName = TempData["SecondName"]?.ToString() ?? string.Empty,
-                LastName = TempData["LastName"]?.ToString() ?? string.Empty,
-                Email = TempData["Email"]?.ToString() ?? string.Empty,
-                contactNumber = TempData["ContactNumber"] != null ? (int)TempData["ContactNumber"] : 0,
-                Address = TempData["Address"]?.ToString() ?? string.Empty,
-                DateOfBirth = TempData["DateOfBirth"] != null
-        ? DateTime.Parse(TempData["DateOfBirth"].ToString())
-        : (DateTime?)null,
-                Role = TempData["Role"]?.ToString() ?? string.Empty
+			var personId = TempData["PersonID"] != null ? (int)TempData["PersonID"] : 0;
+			ViewBag.PersonID = personId;
 
-            }; 
-
-            return View(userDto);
+			return View();
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(UserDto userDto)
+        public IActionResult Create(User user)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-
-                var user = new User
+                var newuser = new User
                 {
-                    PersonId = userDto.PersonId,
-                    Username = userDto.Username,
-                    Password = userDto.Password,
+                    PersonId = user.PersonId,
+                    Username = user.Username,
+                    Password = user.Password,
                 };
 
-                context.Users.Add(user);
+                context.Users.Add(newuser);
                 context.SaveChanges();
-
-                return RedirectToAction("Index", "Users");
+                return RedirectToAction("Index");
             }
 
-            return View(userDto);
+            return View(user);
         }
 
         public IActionResult Edit(int id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var user = context.Users
                 .Include(u => u.UserPerson)
                 .FirstOrDefault(u => u.UserId == id);
@@ -166,6 +165,11 @@ namespace SchoolProject.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             try
             {
                 var user = context.Users
@@ -200,6 +204,11 @@ namespace SchoolProject.Controllers
         }
         public IActionResult Details(int id)
         {
+            if (!SessionHelpercs.IsAdmin(HttpContext))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var user = context.Users
                 .Include(u => u.UserPerson) // 
                 .FirstOrDefault(u => u.UserId == id);

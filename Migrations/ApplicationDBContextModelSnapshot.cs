@@ -82,26 +82,22 @@ namespace SchoolProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GradeId"));
 
-                    b.Property<int>("ActivityMark")
+                    b.Property<int?>("ActivityMark")
                         .HasColumnType("int");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int>("FinalExam")
+                    b.Property<int?>("FinalExam")
                         .HasColumnType("int");
 
-                    b.Property<int>("MidExam")
+                    b.Property<int?>("FirstExam")
                         .HasColumnType("int");
-
-                    b.Property<string>("Semester")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Years")
+                    b.Property<int?>("TotalGrade")
                         .HasColumnType("int");
 
                     b.HasKey("GradeId");
@@ -153,7 +149,7 @@ namespace SchoolProject.Migrations
                     b.Property<DateTime?>("PaymentDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("RemainingPayment")
+                    b.Property<int?>("RemainingPayment")
                         .HasColumnType("int");
 
                     b.Property<int>("StudentId")
@@ -164,8 +160,7 @@ namespace SchoolProject.Migrations
 
                     b.HasKey("PaymentId");
 
-                    b.HasIndex("ClassId")
-                        .IsUnique();
+                    b.HasIndex("ClassId");
 
                     b.HasIndex("StudentId");
 
@@ -339,31 +334,6 @@ namespace SchoolProject.Migrations
                     b.ToTable("Teachers");
                 });
 
-            modelBuilder.Entity("SchoolProject.Data.TeacherAttendance", b =>
-                {
-                    b.Property<int>("AttendanceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AttendanceId"));
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AttendanceId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("TeacherAttendances");
-                });
-
             modelBuilder.Entity("SchoolProject.Data.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -408,7 +378,7 @@ namespace SchoolProject.Migrations
             modelBuilder.Entity("SchoolProject.Data.Course", b =>
                 {
                     b.HasOne("SchoolProject.Data.Class", "CourseClass")
-                        .WithMany("courses")
+                        .WithMany("Courses")
                         .HasForeignKey("ClassId");
 
                     b.HasOne("SchoolProject.Data.Teacher", "CourseTeacher")
@@ -453,8 +423,8 @@ namespace SchoolProject.Migrations
             modelBuilder.Entity("SchoolProject.Data.Payment", b =>
                 {
                     b.HasOne("SchoolProject.Data.Class", "PaymentClass")
-                        .WithOne("Payment")
-                        .HasForeignKey("SchoolProject.Data.Payment", "ClassId")
+                        .WithMany("Payments")
+                        .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -536,17 +506,6 @@ namespace SchoolProject.Migrations
                     b.Navigation("TeacherPerson");
                 });
 
-            modelBuilder.Entity("SchoolProject.Data.TeacherAttendance", b =>
-                {
-                    b.HasOne("SchoolProject.Data.Teacher", "Teacher")
-                        .WithMany("TeacherAttendances")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Teacher");
-                });
-
             modelBuilder.Entity("SchoolProject.Data.User", b =>
                 {
                     b.HasOne("SchoolProject.Data.Person", "UserPerson")
@@ -560,11 +519,11 @@ namespace SchoolProject.Migrations
 
             modelBuilder.Entity("SchoolProject.Data.Class", b =>
                 {
-                    b.Navigation("Payment");
+                    b.Navigation("Courses");
+
+                    b.Navigation("Payments");
 
                     b.Navigation("Students");
-
-                    b.Navigation("courses");
                 });
 
             modelBuilder.Entity("SchoolProject.Data.Course", b =>
@@ -599,8 +558,6 @@ namespace SchoolProject.Migrations
 
             modelBuilder.Entity("SchoolProject.Data.Teacher", b =>
                 {
-                    b.Navigation("TeacherAttendances");
-
                     b.Navigation("course");
                 });
 #pragma warning restore 612, 618
